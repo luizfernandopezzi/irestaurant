@@ -1,6 +1,7 @@
 import foods from 'components/foods/foods.json'
 import styles from 'components/foods/Foods.module.scss'
 import Item from 'components/foods/item/Item'
+import { useEffect, useState } from 'react';
 
 interface Props {
     busca: string;
@@ -8,51 +9,45 @@ interface Props {
     ordenador: string
 }
 
-interface Item {
-    item: {
-        title: string;
-        description: string;
-        photo: string;
-        size: number;
-        serving: number;
-        price: number;
-        id: number;
-        category: {
-            id: number;
-            label: string;
-        };
-        sortBy: () => void;
-    }
-}
-
 export default function Foods( {busca, filtro, ordenador }: Props ){
-    function sortBy(key: string) {
-        return function(a: any, b: any){
-            if (a[key] > b[key]) {
-            return 1;
-            }
-            if (a[key] < b[key]) {
-            return -1;
-            }
-            // a must be equal to b
-            return 0;
+    const [lista, setLista] = useState(foods)
+
+    function buscador(itemTitle: string){
+        return (itemTitle.toLowerCase().indexOf(busca.toLowerCase()) > -1)
+    }
+
+    function filtrador(itemId: number){
+        if(filtro === null){
+            return true;
+        }else{
+            return itemId === filtro
         }
     }
 
-    const buscadorFoods = foods.filter(
-        (item) => (item.title.toLowerCase().indexOf(busca.toLowerCase()) > -1)
-    ).sort(sortBy(ordenador))
+    function sortBy(novaLista: typeof foods) {
+        switch(ordenador){
+            case 'title':
+                return novaLista.sort((a, b) => a.title> b.title ? 1 : -1);
+            case 'serving':
+                 return novaLista.sort((a,b) => a.serving > b.serving ? 1 : -1);
+            case 'size':
+                return novaLista.sort((a,b) => a.size > b.size ? 1 : -1);
+            case 'price':
+                 return novaLista.sort((a,b) => a.price > b.price ? 1 : -1);
+            default:
+                return novaLista; 
+        }
+    }
     
-    const filtrosFoods = buscadorFoods.filter(
-        (item) => item.category.id === filtro
-    ).sort(sortBy(ordenador))
+    useEffect(() => {
+        const novaLista = foods.filter((item) => buscador(item.title) && filtrador(item.category.id))
+        setLista(sortBy(novaLista))
+    }, [busca, filtro, ordenador])
+    
 
     return(
         <div className={styles.itens}>
-            {!filtro 
-                ? buscadorFoods.map(item =>(<Item key={item.id} item={item}/>))
-                : filtrosFoods.map(item=>(<Item key={item.id} item={item}/>))
-            }
+            {lista.map(item =>(<Item key={item.id} item={item}/>))}
         </div>
     )
 }

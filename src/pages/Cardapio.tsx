@@ -9,7 +9,7 @@ import Foods from "components/foods/Foods";
 export default function Cardapio() {
   const [busca, setBusca] = useState<string>('');
   const [filtro, setFiltro] = useState<number | null>(null)
-  const [ordenador, setOrdenador] = useState<string>('')
+  const [ordenador, setOrdenador] = useState('')
 
   return (
     <main>

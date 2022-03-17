@@ -1,29 +1,16 @@
 import styles from 'components/foods/item/Item.module.scss'
-import foods from 'components/foods/foods.json'
+import { Food } from 'types/Food'
 
-// type Props = typeof foods[0]
 interface Props {
-    item: {
-        title: string;
-        description: string;
-        photo: string;
-        size: number;
-        serving: number;
-        price: number;
-        id: number;
-        category: {
-            id: number;
-            label: string;
-        }
-    }
+    item: Food
 }
 
-export default function Item({ item }: Props){
+export default function Item({ item }: Props) {
     const image = item.photo
-    return(
+    return (
         <div className={styles.item}>
             <div className={styles.item__imagem}>
-                <img src={image} alt="Foto do Prato"/>
+                <img src={image} alt="Foto do Prato" />
             </div>
             <div className={styles.item__descricao}>
                 <div className={styles.item__titulo}>
